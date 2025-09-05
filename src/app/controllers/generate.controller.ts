@@ -1,5 +1,5 @@
 import z from 'zod';
-import { chatService } from '../services/chat.service';
+import { generateService } from '../services/generate.service';
 
 const sendMessageSchema = z.object({
    message: z
@@ -14,7 +14,7 @@ export interface RequestBody {
    message: string;
 }
 
-export const chatController = {
+export const generateController = {
    async sendMessage(body: RequestBody) {
       try {
          const validatedData = sendMessageSchema.safeParse(body);
@@ -29,13 +29,17 @@ export const chatController = {
             };
          }
 
-         const response = await chatService.sendMessage(
+         const response = await generateService.sendMessage(
             validatedData.data.message,
             validatedData.data.id
          );
          return response;
       } catch (error) {
-         return { error: 'Failed to generate a response.' };
+         console.error('Error in generateController:', error);
+         return {
+            error: 'Failed to generate a response.',
+            details: error instanceof Error ? error.message : 'Unknown error',
+         };
       }
    },
 };
