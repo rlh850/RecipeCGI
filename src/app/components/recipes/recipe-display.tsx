@@ -48,7 +48,7 @@ export function RecipeDisplay() {
             <div className="text-center py-12">
                <p className="text-muted-foreground">
                   No recipes generated yet. Add some ingredients and click
-                  "Generate Recipes" to get started!
+                  &quot;Generate Recipes&quot; to get started!
                </p>
             </div>
          </div>

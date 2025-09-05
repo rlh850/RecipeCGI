@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { UserButton } from '@clerk/nextjs';
 import { SidebarProps, NavigationItem, SavedRecipe } from './types';
 import {
    HomeIcon,
@@ -21,8 +20,7 @@ import { useIngredientsContext } from '@/contexts/ingredients-context';
 export function Sidebar({ className }: SidebarProps) {
    const [isCollapsed, setIsCollapsed] = useState(false);
    const [activeItem, setActiveItem] = useState('home');
-   const { newIngredient, setNewIngredient, addIngredient } =
-      useIngredientsContext();
+   const { addIngredient } = useIngredientsContext();
    // Mock data
    const savedRecipes: SavedRecipe[] = [
       {

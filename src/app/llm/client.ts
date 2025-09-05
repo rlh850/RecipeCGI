@@ -5,6 +5,20 @@ import { systemPrompt } from './prompts/systemInstructions';
 
 dotenv.config();
 
+// Define proper types for OpenAI response structure
+interface OpenAIResponse {
+   id: string;
+   output?: unknown;
+   output_text?: string;
+}
+
+interface FunctionCallItem {
+   type: 'function_call';
+   name: string;
+   call_id?: string;
+   arguments: string | object;
+}
+
 const openAIClient = new OpenAI({
    apiKey: process.env.OPENAI_API_KEY,
 });
@@ -37,12 +51,12 @@ export const llmClient = {
       const response = await openAIClient.responses.create({
          model,
          input: prompt,
-         tools: tools as any,
+         tools: tools,
          instructions,
          reasoning: { effort: 'medium' },
          previous_response_id: previousResponseId,
       });
-      const output: unknown = (response as any)?.output;
+      const output: unknown = (response as OpenAIResponse)?.output;
       const toolCalls: Array<{
          name: string;
          arguments: unknown;
@@ -54,11 +68,12 @@ export const llmClient = {
             if (
                item &&
                typeof item === 'object' &&
-               (item as any).type === 'function_call'
+               (item as FunctionCallItem).type === 'function_call'
             ) {
-               const name = (item as any).name as string | undefined;
-               const call_id = (item as any).call_id as string | undefined;
-               let args: unknown = (item as any).arguments;
+               const functionCallItem = item as FunctionCallItem;
+               const name = functionCallItem.name;
+               const call_id = functionCallItem.call_id;
+               let args: unknown = functionCallItem.arguments;
                if (typeof args === 'string') {
                   try {
                      args = JSON.parse(args);
@@ -75,7 +90,7 @@ export const llmClient = {
 
       return {
          id: response.id,
-         text: (response as any)?.output_text,
+         text: (response as OpenAIResponse)?.output_text,
          toolCalls,
       };
    },

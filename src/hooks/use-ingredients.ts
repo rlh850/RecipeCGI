@@ -100,12 +100,15 @@ export function useIngredients() {
             // Extract generated recipes from the API response
             if (data.results && data.results.length > 0) {
                const newRecipes: GeneratedRecipe[] = data.results
-                  .filter((result: any) => result.result && !result.error)
-                  .map((result: any) => {
+                  .filter(
+                     (result: { result?: unknown; error?: unknown }) =>
+                        result.result && !result.error
+                  )
+                  .map((result: { result: GeneratedRecipe }) => {
                      const recipe = result.result;
                      // Map the ingredients to check availability
                      const recipeIngredients = recipe.ingredients.map(
-                        (ing: any) => ({
+                        (ing: { name: string; amount: string }) => ({
                            name: ing.name,
                            amount: ing.amount,
                            available: ingredientNames.some(

@@ -1,5 +1,5 @@
 export const recipeGeneratorTool = {
-   type: 'function',
+   type: 'function' as const,
    name: 'generate_recipe',
    description:
       'Generate a recipe based on available ingredients. Returns a complete recipe with title, cooking time, difficulty, ingredients with amounts, step-by-step instructions, and relevant tags.',

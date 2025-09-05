@@ -1,7 +1,6 @@
 import { llmClient } from '../llm/client';
 import { generateRepository } from '../repository/generate.repository';
 import { toolExecutors } from '../llm/tools';
-import type { GeneratedRecipe } from '../llm/tools';
 
 export const generateService = {
    async sendMessage(message: string, id: string) {
@@ -20,7 +19,9 @@ export const generateService = {
                try {
                   const executor =
                      toolExecutors[toolCall.name as keyof typeof toolExecutors];
-                  const result = await executor(toolCall.arguments as any);
+                  const result = await executor(
+                     toolCall.arguments as Parameters<typeof executor>[0]
+                  );
                   results.push({
                      toolCall,
                      result,
